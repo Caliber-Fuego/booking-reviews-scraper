@@ -59,6 +59,9 @@ class Scrape:
             os.getenv("job_id")
         )
         self._save_data_to_disk = save_data_to_disk
+    
+    def clean_text(text):
+        return re.sub(r"[^a-zA-Z0-9\s]", "", text) if text else None
 
     def _get_logger(self):
         if not os.path.isdir("logs"):
@@ -393,6 +396,11 @@ class Scrape:
                         in review_text_liked.lower()
                     ):
                         review_text_liked = None
+                    
+                    if review_text_liked and re.search(r'[^a-zA-Z0-9\s.,!?;:-]', review_text_liked): review_text_liked = None
+                    if review_text_disliked and re.search(r'[^a-zA-Z0-9\s.,!?;:-]', review_text_disliked): review_text_disliked = None
+
+
                     original_lang = review_text[0].get("lang", default=None)
 
                     if len(review_text) > 1:
